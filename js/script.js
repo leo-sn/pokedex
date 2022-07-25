@@ -7,6 +7,11 @@ const pokemonImage = document.querySelector('.pokemon-image');
 const form = document.querySelector('.form');
 const input = document.querySelector('.input-search');
 
+const buttonPrev = document.querySelector('.btn-prev');
+const buttonNext = document.querySelector('.btn-next');
+
+let searchPokemon = 1;
+
 //function to fecth data from the API
 const fetchPokemon = async (pokemon) => {
 
@@ -39,18 +44,25 @@ const renderPokemon = async (pokemon) => {
     //only returns fetched information if 'data' EXIST
     if (data) {
         //adding fetched data into HTML (line2)
+        
         pokemonName.innerHTML = data.name;
         pokemonNumber.innerHTML = data.id;
         pokemonImage.src = data['sprites']['versions']['generation-v']['black-white']['animated']['front_default'];
-
+        pokemonImage.style.display = 'block';
 
         //clears the value after searched.
         input.value = '';
+        searchPokemon = data.id;
 
     } else {
+
+        //if the reuturn doesnt exist, hide image, update name, and number.
+        pokemonImage.style.display = 'none';
         pokemonName.innerHTML = 'Not found!';
         pokemonNumber.innerHTML = '';
     }
+
+
 
 }
 
@@ -66,4 +78,20 @@ form.addEventListener('submit', (event) => {
 
 });
 
+//listening the button to run prev or next event.
+buttonPrev.addEventListener('click', () => {
+    if (searchPokemon > 1) {
+        searchPokemon -= 1;
+    renderPokemon(searchPokemon);
+    }
+    
+})
 
+buttonNext.addEventListener('click', () => {
+    searchPokemon += 1;
+    renderPokemon(searchPokemon);
+})
+
+
+//to aways render the 1st pokemon when load.
+renderPokemon('1');
